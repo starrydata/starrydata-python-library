@@ -13,9 +13,10 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-  "requests"
+    "requests",
+    "pandas"
 ]
 
 [project.urls]
-Homepage = "https://github.com/starrydata/starrykit"
+Homepage = "https://github.com/starrydata/starrydata-"
 Issues = "https://github.com/starrydata/starrykit/issues"

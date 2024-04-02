@@ -1,13 +1,15 @@
 import requests
-import os
+import io
 import zipfile
 from datetime import datetime
 import logging
+import pandas as pd
 
 # Set up basic configuration for logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 logging.info("Loading dataset module...")
+
 
 def fetch_latest_dataset(project_id=155129, api_url="https://api.figshare.com/v2"):
     """Fetch the latest dataset from the specified project on Figshare."""
@@ -24,32 +26,36 @@ def fetch_latest_dataset(project_id=155129, api_url="https://api.figshare.com/v2
     return None, None
 
 
-def download_and_prepare_dataset(download_url, published_date):
-    """Download and extract the dataset."""
-    zip_path = f"{published_date}.zip"
-    dir_path = f"./{published_date}"
-
+def download_and_load_dataset(download_url):
+    """Download and load the dataset from Figshare into a pandas DataFrame."""
     try:
+        # Download the file
         response = requests.get(download_url)
-        if response.status_code == 200:
-            with open(zip_path, 'wb') as file:
-                file.write(response.content)
 
-            os.makedirs(dir_path, exist_ok=True)
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(dir_path)
-            return dir_path
+        if response.status_code == 200:
+            zip_data = io.BytesIO(response.content)
+            with zipfile.ZipFile(zip_data, 'r') as zip_ref:
+                csv_file = zip_ref.namelist()[0]  # Assume the first file in the zip is the CSV
+                with zip_ref.open("all_curves.csv") as file:
+                    df = pd.read_csv(file)
+                    return df
+        else:
+            logging.info(f"Failed to download the file. Status code: {response.status_code}")
     except Exception as e:
         logging.info(f"An error occurred: {e}")
     return None
 
 
-def download_dataset():
-    """Fetch, download, and prepare the latest dataset from the Starrydata project on Figshare."""
+def load_latest_dataset():
+    """Fetch and load the latest dataset from the Starrydata project on Figshare into a pandas DataFrame."""
     download_url, published_date = fetch_latest_dataset()
-    if download_url and published_date:
-        download_and_prepare_dataset(download_url, published_date)
-        return published_date
+    if download_url:
+        df = download_and_load_dataset(download_url)
+        if df is not None:
+            logging.info(f"Successfully loaded the dataset from {published_date} into a DataFrame.")
+            return df
+        else:
+            logging.info("Failed to load the dataset into a DataFrame.")
     else:
         logging.info("Failed to fetch the latest dataset.")
-        return None
+    return None
