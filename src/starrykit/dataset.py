@@ -1,3 +1,5 @@
+import json
+
 import requests
 import io
 import zipfile
@@ -26,36 +28,42 @@ def fetch_latest_dataset(project_id=155129, api_url="https://api.figshare.com/v2
     return None, None
 
 
-def download_and_load_dataset(download_url):
-    """Download and load the dataset from Figshare into a pandas DataFrame."""
-    try:
-        # Download the file
-        response = requests.get(download_url)
+def load_dataset(dataset_type: str, project_id: int = 155129,
+                 api_url: str = "https://api.figshare.com/v2") -> pd.DataFrame:
+    """
+    Fetch and load the latest specified dataset from the Starrydata project on Figshare into a pandas DataFrame.
 
+    :param dataset_type: The type of dataset to load. Can be 'curves', 'samples', or 'papers'.
+    :param project_id: The ID of the Figshare project containing the datasets.
+    :param api_url: The base URL of the Figshare API.
+    :return: A pandas DataFrame containing the loaded dataset, or None if the dataset could not be loaded.
+    """
+    if dataset_type not in ['curves', 'samples', 'papers']:
+        logging.error(f"Invalid dataset type: {dataset_type}. Must be 'curves', 'samples', or 'papers'.")
+        return None
+
+    articles = requests.get(f"{api_url}/projects/{project_id}/articles").json()
+    article = max(articles, key=lambda x: x['published_date'])
+
+    article_details = requests.get(article['url_public_api']).json()
+    download_url = article_details['files'][0]['download_url']
+
+    try:
+        response = requests.get(download_url)
         if response.status_code == 200:
             zip_data = io.BytesIO(response.content)
             with zipfile.ZipFile(zip_data, 'r') as zip_ref:
-                csv_file = zip_ref.namelist()[0]  # Assume the first file in the zip is the CSV
-                with zip_ref.open("all_curves.csv") as file:
-                    df = pd.read_csv(file)
+                filename = f"all_{dataset_type}.{'json' if dataset_type == 'papers' else 'csv'}"
+                with zip_ref.open(filename) as file:
+                    if dataset_type == 'papers':
+                        data = json.load(file)
+                        df = pd.DataFrame(data)
+                    else:
+                        df = pd.read_csv(file)
+                    logging.info(
+                        f"Successfully loaded the latest {filename} from {article['published_date']} into a DataFrame.")
                     return df
         else:
-            logging.info(f"Failed to download the file. Status code: {response.status_code}")
+            logging.error(f"Failed to download the file. Status code: {response.status_code}")
     except Exception as e:
-        logging.info(f"An error occurred: {e}")
-    return None
-
-
-def load_latest_dataset():
-    """Fetch and load the latest dataset from the Starrydata project on Figshare into a pandas DataFrame."""
-    download_url, published_date = fetch_latest_dataset()
-    if download_url:
-        df = download_and_load_dataset(download_url)
-        if df is not None:
-            logging.info(f"Successfully loaded the dataset from {published_date} into a DataFrame.")
-            return df
-        else:
-            logging.info("Failed to load the dataset into a DataFrame.")
-    else:
-        logging.info("Failed to fetch the latest dataset.")
-    return None
+        logging.error(f"An error occurred: {e}")
