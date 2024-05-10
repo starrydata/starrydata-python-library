@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 import pandas as pd
 
-from starrykit.dataset import fetch_latest_dataset, load_dataset
+from starrydata.dataset import fetch_latest_dataset, load_dataset
 
 
 class TestDatasetFunctions(unittest.TestCase):

@@ -142,3 +142,6 @@ cython_debug/
 
 # IDEA
 .idea
+
+.envrc
+.envrc.*

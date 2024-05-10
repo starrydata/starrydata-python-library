@@ -1,6 +1,6 @@
 [project]
-name = "starrykit"
-version = "0.0.6"
+name = "starrydata"
+version = "0.0.7"
 authors = [
   { name="MATO Tomoya", email="tomoya.matou@gmail.com" },
 ]
@@ -19,4 +19,4 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/starrydata/starrydata-"
-Issues = "https://github.com/starrydata/starrykit/issues"
+Issues = "https://github.com/starrydata/starrydata-python-library/issues"
