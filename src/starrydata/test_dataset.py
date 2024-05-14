@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 import pandas as pd
 
-from starrydata.dataset import fetch_latest_dataset, load_dataset, read_dataset
+from starrydata.dataset import fetch_latest_dataset, load_dataset, read_dataset, fetch_dataset_by_date
 
 
 class TestDatasetFunctions(unittest.TestCase):
@@ -77,7 +77,45 @@ class TestDatasetFunctions(unittest.TestCase):
 
             pd.testing.assert_frame_equal(df, expected_df)
 
-    # さらにエラーケースや他の関数のテストも追加できます。
+    def test_fetch_dataset_by_date_success(self):
+        """Test fetching dataset by date successfully returns a DataFrame."""
+        with patch('requests.post') as mock_post, \
+             patch('requests.get') as mock_get, \
+             patch('io.BytesIO') as mock_bytes_io, \
+             patch('zipfile.ZipFile') as mock_zip_file, \
+             patch('zipfile.ZipFile.open', create=True) as mock_open:
+            # Setup mock for POST request
+            mock_post_response = MagicMock()
+            mock_post_response.status_code = 200
+            mock_post_response.json.return_value = [{
+                'files': [{'download_url': 'http://api.example.com/download'}]
+            }]
+            mock_post.return_value = mock_post_response
+
+            # Setup mock for GET request (file download)
+            mock_get_response = MagicMock()
+            mock_get_response.status_code = 200
+            mock_get_response.content = b'file content'
+            mock_get.return_value = mock_get_response
+
+            # Mocking zipfile to simulate extracting and reading files
+            mock_zip = MagicMock()
+            mock_zip_file.return_value.__enter__.return_value = mock_zip
+            mock_open.return_value.__enter__.return_value = io.StringIO("data1,data2\nvalue1,value2")
+
+            df = fetch_dataset_by_date('20240510')
+
+            expected_df = pd.DataFrame({
+                'data1': ['value1'],
+                'data2': ['value2']
+            })
+
+            pd.testing.assert_frame_equal(df, expected_df)
+
+    def test_fetch_dataset_by_date(self):
+        fetch_dataset_by_date(date="20240505")
+
 
 if __name__ == '__main__':
     unittest.main()
+
