@@ -63,10 +63,17 @@ def _download_file(url: str, local_path: str) -> None:
     response = requests.get(url, stream=True)
     file_size = int(response.headers.get('Content-Length', 0))
 
-    with open(local_path, 'wb') as file:
-        for chunk in tqdm(response.iter_content(chunk_size=1024), total=file_size, unit='B', unit_scale=True):
+    with open(local_path, 'wb') as file, tqdm(
+            desc="Downloading",
+            total=file_size,
+            unit='B',
+            unit_scale=True,
+            unit_divisor=1024,  # Use 1024 to match byte size correctly
+    ) as progress_bar:
+        for chunk in response.iter_content(chunk_size=1024):
             if chunk:
                 file.write(chunk)
+                progress_bar.update(len(chunk))
 
 def _extract_file_from_zip(zip_path: str, filename: str) -> io.BytesIO:
     """
