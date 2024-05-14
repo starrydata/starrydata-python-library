@@ -53,39 +53,47 @@ def _fetch_article(project_id: int, api_url: str, date: str = None) -> dict:
     articles = requests.get(f"{api_url}/projects/{project_id}/articles").json()
     return max(articles, key=lambda x: x['published_date'])
 
-def _download_file(url: str, local_path: str) -> None:
+def _download_file(url: str) -> io.BytesIO:
     """
-    Download a file from the specified URL and save it locally.
+    Download a file from the specified URL and return it as a BytesIO object.
 
     :param url: The URL to download the file from.
-    :param local_path: The local path to save the downloaded file.
+    :return: A BytesIO object containing the downloaded file.
     """
     response = requests.get(url, stream=True)
     file_size = int(response.headers.get('Content-Length', 0))
 
-    with open(local_path, 'wb') as file, tqdm(
+    chunk_size = 1024  # Set chunk size to 1024 bytes (1 KB)
+    buffer = io.BytesIO()
+
+    with tqdm(
             desc="Downloading",
             total=file_size,
             unit='B',
             unit_scale=True,
             unit_divisor=1024,  # Use 1024 to match byte size correctly
     ) as progress_bar:
-        for chunk in response.iter_content(chunk_size=1024):
+        for chunk in response.iter_content(chunk_size=chunk_size):
             if chunk:
-                file.write(chunk)
+                buffer.write(chunk)
                 progress_bar.update(len(chunk))
 
-def _extract_file_from_zip(zip_path: str, filename: str) -> io.BytesIO:
-    """
-    Extract a specific file from a zip archive.
+    buffer.seek(0)  # Reset buffer position to the beginning
+    return buffer
 
-    :param zip_path: The path to the zip file.
+
+def _extract_file_from_zip(zip_data: io.BytesIO, filename: str) -> io.BytesIO:
+    """
+    Extract a specific file from a zip archive contained in a BytesIO object.
+
+    :param zip_data: A BytesIO object containing the zip file data.
     :param filename: The name of the file to extract.
     :return: A BytesIO object containing the extracted file data.
     """
-    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+    with zipfile.ZipFile(zip_data, 'r') as zip_ref:
         with zip_ref.open(filename) as file:
             return io.BytesIO(file.read())
+
 
 def _load_data_from_file(file_data: io.BytesIO, dataset_type: str) -> pd.DataFrame:
     """
@@ -120,14 +128,11 @@ def load_dataset(dataset_type: str, project_id: int = 155129,
 
     article_details = requests.get(article['url_public_api']).json()
     download_url = article_details['files'][0]['download_url']
-    temp_zip_path = 'temp.zip'
-
-    _download_file(download_url, temp_zip_path)
+    zip_data = _download_file(download_url)
 
     filename = f"all_{dataset_type}.{'json' if dataset_type == 'papers' else 'csv'}"
-    file_data = _extract_file_from_zip(temp_zip_path, filename)
+    file_data = _extract_file_from_zip(zip_data, filename)
 
     df = _load_data_from_file(file_data, dataset_type)
     logging.info(f"Successfully loaded {filename} from {article['published_date']} into a DataFrame.")
     return df
-
