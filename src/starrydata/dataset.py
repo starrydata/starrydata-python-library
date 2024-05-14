@@ -43,7 +43,10 @@ def _fetch_article(project_id: int, api_url: str, date: str = None) -> dict:
         articles = response.json()
 
         if not articles:
-            logging.error(f"No articles found for the specified date: {date}")
+            logging.error(
+                f"No articles found for the specified date: {date}. "
+                "Please check the valid dates at https://figshare.com/projects/Starrydata_datasets/155129"
+            )
             return None
         return articles[0]
 
