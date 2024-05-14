@@ -4,7 +4,6 @@ import io
 import zipfile
 import logging
 import pandas as pd
-from datetime import datetime
 from tqdm import tqdm
 
 # Set up basic configuration for logging
@@ -12,7 +11,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 logging.info("Loading dataset module...")
 
-def validate_dataset_type(dataset_type: str) -> bool:
+def _validate_dataset_type(dataset_type: str) -> bool:
     """
     Validate the dataset type.
 
@@ -25,7 +24,7 @@ def validate_dataset_type(dataset_type: str) -> bool:
         return False
     return True
 
-def fetch_article(project_id: int, api_url: str, date: str = None) -> dict:
+def _fetch_article(project_id: int, api_url: str, date: str = None) -> dict:
     """
     Fetch the article metadata from Figshare.
 
@@ -51,7 +50,7 @@ def fetch_article(project_id: int, api_url: str, date: str = None) -> dict:
     articles = requests.get(f"{api_url}/projects/{project_id}/articles").json()
     return max(articles, key=lambda x: x['published_date'])
 
-def download_file(url: str, local_path: str) -> None:
+def _download_file(url: str, local_path: str) -> None:
     """
     Download a file from the specified URL and save it locally.
 
@@ -66,7 +65,7 @@ def download_file(url: str, local_path: str) -> None:
             if chunk:
                 file.write(chunk)
 
-def extract_file_from_zip(zip_path: str, filename: str) -> io.BytesIO:
+def _extract_file_from_zip(zip_path: str, filename: str) -> io.BytesIO:
     """
     Extract a specific file from a zip archive.
 
@@ -78,7 +77,7 @@ def extract_file_from_zip(zip_path: str, filename: str) -> io.BytesIO:
         with zip_ref.open(filename) as file:
             return io.BytesIO(file.read())
 
-def load_data_from_file(file_data: io.BytesIO, dataset_type: str) -> pd.DataFrame:
+def _load_data_from_file(file_data: io.BytesIO, dataset_type: str) -> pd.DataFrame:
     """
     Load data from a file into a pandas DataFrame.
 
@@ -102,10 +101,10 @@ def load_dataset(dataset_type: str, project_id: int = 155129,
     :param date: The date of the dataset to load in 'YYYY-MM-DD' format. If None, the latest dataset is loaded.
     :return: A pandas DataFrame containing the loaded dataset, or None if the dataset could not be loaded.
     """
-    if not validate_dataset_type(dataset_type):
+    if not _validate_dataset_type(dataset_type):
         return None
 
-    article = fetch_article(project_id, api_url, date)
+    article = _fetch_article(project_id, api_url, date)
     if not article:
         return None
 
@@ -113,11 +112,11 @@ def load_dataset(dataset_type: str, project_id: int = 155129,
     download_url = article_details['files'][0]['download_url']
     temp_zip_path = 'temp.zip'
 
-    download_file(download_url, temp_zip_path)
+    _download_file(download_url, temp_zip_path)
 
     filename = f"all_{dataset_type}.{'json' if dataset_type == 'papers' else 'csv'}"
-    file_data = extract_file_from_zip(temp_zip_path, filename)
+    file_data = _extract_file_from_zip(temp_zip_path, filename)
 
-    df = load_data_from_file(file_data, dataset_type)
+    df = _load_data_from_file(file_data, dataset_type)
     logging.info(f"Successfully loaded {filename} from {article['published_date']} into a DataFrame.")
     return df
