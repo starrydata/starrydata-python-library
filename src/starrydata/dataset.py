@@ -121,19 +121,3 @@ def load_dataset(dataset_type: str, project_id: int = 155129,
     logging.info(f"Successfully loaded {filename} from {article['published_date']} into a DataFrame.")
     return df
 
-def get_available_dates(project_id: int = 155129, api_url: str = "https://api.figshare.com/v2") -> list:
-    """
-    Fetch and return a list of available dataset dates from the Starrydata project on Figshare.
-
-    :param project_id: The ID of the Figshare project containing the datasets.
-    :param api_url: The base URL of the Figshare API.
-    :return: A list of dates in 'YYYY-MM-DD' format for which datasets are available.
-    """
-    try:
-        articles = requests.get(f"{api_url}/projects/{project_id}/articles").json()
-        dates = [article['published_date'][:10] for article in articles]
-        return sorted(dates, reverse=True)
-    except requests.RequestException as e:
-        logging.error(f"Failed to fetch available dates: {e}")
-        return []
-
