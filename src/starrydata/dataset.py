@@ -70,7 +70,8 @@ class Dataset:
             with zip_ref.open(filename) as file:
                 return io.BytesIO(file.read())
 
-    def get_all_samples(self) -> io.BytesIO:
+    @property
+    def all_samples(self) -> io.BytesIO:
         """
         Extract and load the 'all_samples.csv' file from the downloaded ZIP file into a pandas DataFrame.
 
@@ -80,7 +81,8 @@ class Dataset:
         file_data = self._extract_file_from_zip(filename)
         return file_data
 
-    def get_all_papers(self) -> io.BytesIO:
+    @property
+    def all_papers(self) -> io.BytesIO:
         """
         Extract and load the 'all_papers.json' file from the downloaded ZIP file into a pandas DataFrame.
 
@@ -90,7 +92,8 @@ class Dataset:
         file_data = self._extract_file_from_zip(filename)
         return file_data
 
-    def get_all_curves(self) -> io.BytesIO:
+    @property
+    def all_curves(self) -> io.BytesIO:
         """
         Extract and load the 'all_curves.csv' file from the downloaded ZIP file into a pandas DataFrame.
 
@@ -99,3 +102,14 @@ class Dataset:
         filename = "all_curves.csv"
         file_data = self._extract_file_from_zip(filename)
         return file_data
+
+    @property
+    def database_snapshot(self) -> str:
+        """
+        Extract and return the contents of the 'db_snapshot.txt' file from the downloaded ZIP file as a string.
+
+        :return: A string containing the contents of 'db_snapshot.txt'.
+        """
+        filename = "db_snapshot.txt"
+        file_data = self._extract_file_from_zip(filename)
+        return file_data.getvalue().decode('utf-8')
