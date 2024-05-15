@@ -57,7 +57,12 @@ class Dataset:
         download_url = article_details['files'][0]['download_url']
         file_name = article_details['files'][0]['name']
         logging.info(f"Downloading file: {file_name}")
-        response = requests.get(download_url, stream=True)
+        # Attempt to download the file with certificate verification
+        try:
+            response = requests.get(download_url, stream=True)
+        except requests.exceptions.SSLError as e:
+            logging.warning("SSL verification failed, retrying without verification.")
+            response = requests.get(download_url, stream=True, verify=False)
         file_size = int(response.headers.get('Content-Length', 0))
         logging.info(f"File size: {file_size} bytes")
         chunk_size = 1024  # Set chunk size to 1024 bytes (1 KB)
