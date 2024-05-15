@@ -42,13 +42,18 @@ class Dataset:
         return max(articles, key=lambda x: x['published_date'])
 
     def _download_zip(self) -> io.BytesIO:
+        logging.info("Starting the download of the ZIP file.")
         article = self._fetch_article()
         if not article:
+            logging.error("Article fetch failed. Exiting download process.")
             return None
         article_details = requests.get(article['url_public_api']).json()
         download_url = article_details['files'][0]['download_url']
+        file_name = article_details['files'][0]['name']
+        logging.info(f"Downloading file: {file_name}")
         response = requests.get(download_url, stream=True)
         file_size = int(response.headers.get('Content-Length', 0))
+        logging.info(f"File size: {file_size} bytes")
         chunk_size = 1024  # Set chunk size to 1024 bytes (1 KB)
         buffer = io.BytesIO()
         with tqdm(
@@ -62,8 +67,11 @@ class Dataset:
                 if chunk:
                     buffer.write(chunk)
                     progress_bar.update(len(chunk))
+                    logging.debug(f"Downloaded chunk of size: {len(chunk)} bytes")
         buffer.seek(0)  # Reset buffer position to the beginning
+        logging.info(f"Download complete. ZIP file '{file_name}' loaded into memory.")
         return buffer
+
 
     def _extract_file_from_zip(self, filename: str) -> io.BytesIO:
         with zipfile.ZipFile(self.zip_data, 'r') as zip_ref:
