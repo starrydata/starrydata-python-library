@@ -145,3 +145,7 @@ cython_debug/
 
 .envrc
 .envrc.*
+
+*.ipynb
+
+.DS_STORE
