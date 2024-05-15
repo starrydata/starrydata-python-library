@@ -23,6 +23,7 @@ class Dataset:
         self.zip_data = self._download_zip()
 
     def _fetch_article(self) -> dict:
+        logging.info("Fetching dataset information.")
         if self.date:
             search_for = f"{self.date.replace('-', '')}_starrydata2"
             search_url = f"{self.api_url}/articles/search"
@@ -32,14 +33,19 @@ class Dataset:
             articles = response.json()
             if not articles:
                 logging.error(
-                    f"No articles found for the specified date: {self.date}. "
+                    f"No datasets found for the specified date: {self.date}. "
                     "Please check the valid dates at https://figshare.com/projects/Starrydata_datasets/155129"
                 )
                 return None
+            logging.info(f"Found dataset for date {self.date}: {articles[0]['title']}")
             return articles[0]
 
+        logging.info("No specific date provided. Fetching the latest dataset.")
         articles = requests.get(f"{self.api_url}/projects/{self.project_id}/articles").json()
-        return max(articles, key=lambda x: x['published_date'])
+        latest_article = max(articles, key=lambda x: x['published_date'])
+        logging.info(f"Found latest dataset: {latest_article['title']}")
+        return latest_article
+
 
     def _download_zip(self) -> io.BytesIO:
         logging.info("Starting the download of the ZIP file.")
