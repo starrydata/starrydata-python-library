@@ -57,6 +57,8 @@ class Dataset:
         download_url = article_details['files'][0]['download_url']
         file_name = article_details['files'][0]['name']
         logging.info(f"Downloading file: {file_name}")
+        # Ensure the file name is printed to standard output
+        print(f"Downloading file: {file_name}")
         response = requests.get(download_url, stream=True)
         file_size = int(response.headers.get('Content-Length', 0))
         logging.info(f"File size: {file_size} bytes")
@@ -76,6 +78,8 @@ class Dataset:
                     logging.debug(f"Downloaded chunk of size: {len(chunk)} bytes")
         buffer.seek(0)  # Reset buffer position to the beginning
         logging.info(f"Download complete. ZIP file '{file_name}' loaded into memory.")
+        # Ensure the completion message is printed to standard output
+        print(f"Download complete. ZIP file '{file_name}' loaded into memory.")
         return buffer
 
 
