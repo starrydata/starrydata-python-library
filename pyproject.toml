@@ -18,5 +18,5 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/starrydata/starrydata-"
+Homepage = "https://github.com/starrydata/starrydata-python-library"
 Issues = "https://github.com/starrydata/starrydata-python-library/issues"
