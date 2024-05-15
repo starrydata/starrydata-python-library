@@ -1,6 +1,6 @@
 [project]
 name = "starrydata"
-version = "0.0.8"
+version = "0.0.9"
 authors = [
   { name="MATO Tomoya", email="tomoya.matou@gmail.com" },
 ]
