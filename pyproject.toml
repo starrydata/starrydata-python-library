@@ -1,6 +1,6 @@
 [project]
 name = "starrydata"
-version = "0.0.7"
+version = "0.0.8"
 authors = [
   { name="MATO Tomoya", email="tomoya.matou@gmail.com" },
 ]
@@ -14,7 +14,7 @@ classifiers = [
 ]
 dependencies = [
     "requests",
-    "pandas"
+    "tqdm>=4.0.0"
 ]
 
 [project.urls]
