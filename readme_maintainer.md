@@ -54,6 +54,20 @@ This script will:
 3. Build the package using `python -m build`.
 4. Upload the built package to the specified PyPI repository (Test or Production) using `twine`.
 
+## Installation
+
+You can install Starrydata from PyPI using the following command:
+
+```sh
+pip install starrydata
+```
+
+If you want to install from the PyPI test repository for testing purposes, use the following command:
+
+```sh
+pip install --index-url https://test.pypi.org/simple/ --no-deps starrydata
+```
+
 ## Notes
 
 - Ensure that your `TEST_PYPI_API_TOKEN` and `PYPI_API_TOKEN` environment variables are set with your Test PyPI and Production PyPI API tokens, respectively.

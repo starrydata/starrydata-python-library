@@ -11,12 +11,6 @@ You can install Starrydata from PyPI using the following command:
 pip install starrydata
 ```
 
-If you want to install from the PyPI test repository for testing purposes, use the following command:
-
-```sh
-pip install --index-url https://test.pypi.org/simple/ --no-deps starrydata
-```
-
 ## Usage
 
 Below is an example of how to use Starrydata.
@@ -55,8 +49,5 @@ Bug reports and feature requests are welcome at the [GitHub repository](https://
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE file](LICENSE) for more details.
+This project is licensed under the MIT License. See the [LICENSE file](https://github.com/starrydata/starrydata-python-library?tab=MIT-1-ov-file#readme) for more details.
 
----
-
-For questions or support, please contact [support@example.com](mailto:support@example.com).

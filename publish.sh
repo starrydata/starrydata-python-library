@@ -19,7 +19,7 @@ if [ "$2" == "--test" ]; then
     API_TOKEN=$TEST_PYPI_API_TOKEN
 else
     REPOSITORY="pypi"
-    API_TOKEN=$PYPI_API_TOKEN
+    API_TOKEN=$PROD_PYPI_API_TOKEN
 fi
 
 # Update version
