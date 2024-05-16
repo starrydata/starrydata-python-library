@@ -5,7 +5,13 @@ Starrydata is a library that allows users to easily download and utilize dataset
 
 ## Installation
 
-You can install Starrydata from PyPI test using the following command:
+You can install Starrydata from PyPI using the following command:
+
+```sh
+pip install starrydata
+```
+
+If you want to install from the PyPI test repository for testing purposes, use the following command:
 
 ```sh
 pip install --index-url https://test.pypi.org/simple/ --no-deps starrydata
@@ -20,7 +26,7 @@ Below is an example of how to use Starrydata.
 To download a specific dataset, use the `Dataset` class. Here is an example of how to download and load a dataset into a pandas DataFrame:
 
 ```python
-from dataset import Dataset
+from starrydata import Dataset
 import pandas as pd
 
 # Initialize the Dataset object with a specific date
@@ -35,7 +41,7 @@ print(df)
 
 ## Documentation
 
-For more detailed documentation and usage examples, please refer to the [official documentation](https://test.pypi.org/project/starrydata/0.0.14/).
+For more detailed documentation and usage examples, please refer to the [official documentation](https://pypi.org/project/starrydata/).
 
 ## Contributing
 
@@ -54,5 +60,3 @@ This project is licensed under the MIT License. See the [LICENSE file](LICENSE) 
 ---
 
 For questions or support, please contact [support@example.com](mailto:support@example.com).
-
-```
