@@ -1,56 +1,58 @@
-# Deployment Guide for starrydata Package
+```markdown
+# Starrydata
 
-This guide outlines the steps for version management, building, and deploying the `starrydata` package to the PyPI Test repository using automated scripts.
+Starrydata is a library that allows users to easily download and utilize datasets related to inorganic materials. This library enables efficient data retrieval for research and projects.
 
-## Prerequisites
+## Installation
 
-- Python 3.9 or higher
-- `bumpversion` for version management
-- `build` for building the package
-- `twine` for uploading the package to PyPI
-
-## Installation of Required Tools
-
-First, ensure you have the necessary tools installed:
+You can install Starrydata from PyPI test using the following command:
 
 ```sh
-pip install bumpversion build twine
+pip install --index-url https://test.pypi.org/simple/ --no-deps starrydata
 ```
-
-## Automated Deployment Script
 
 ## Usage
 
-To deploy a new version of the `starrydata` package, run the `publish.sh` script with the appropriate version bump argument:
+Below is an example of how to use Starrydata.
 
-- For a patch version update (e.g., 0.0.8 → 0.0.9):
+### Downloading a Dataset
 
-  ```sh
-  ./publish.sh patch
-  ```
+To download a specific dataset, use the `Dataset` class. Here is an example of how to download and load a dataset into a pandas DataFrame:
 
-- For a minor version update (e.g., 0.0.8 → 0.1.0):
+```python
+from dataset import Dataset
+import pandas as pd
 
-  ```sh
-  ./publish.sh minor
-  ```
+# Initialize the Dataset object with a specific date
+dataset = Dataset(date="20240515")
 
-- For a major version update (e.g., 0.0.8 → 1.0.0):
+# Load the dataset into a pandas DataFrame
+df = pd.read_csv(dataset.all_curves)
 
-  ```sh
-  ./publish.sh major
-  ```
+# Display the DataFrame
+print(df)
+```
 
-This script will:
+## Documentation
 
-1. Update the version using `bumpversion` and commit the changes.
-2. Clean the `dist` directory.
-3. Build the package using `python -m build`.
-4. Upload the built package to the PyPI Test repository using `twine`.
+For more detailed documentation and usage examples, please refer to the [official documentation](https://test.pypi.org/project/starrydata/0.0.14/).
 
-## Notes
+## Contributing
 
-- Ensure that your `TEST_PYPI_API_TOKEN` environment variable is set with your Test PyPI API token.
-- The `.bumpversion.cfg` file should be adjusted if additional files or specific configurations are needed.
+Bug reports and feature requests are welcome at the [GitHub repository](https://github.com/starrydata/starrydata-python-library/). Contributions to the codebase are also appreciated. Follow these steps to contribute:
 
-By following this guide, you can streamline the deployment process of your `starrydata` package, making it more efficient and less error-prone.
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature-branch`)
+3. Commit your changes (`git commit -am 'Add new feature'`)
+4. Push the branch (`git push origin feature-branch`)
+5. Create a pull request
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE file](LICENSE) for more details.
+
+---
+
+For questions or support, please contact [support@example.com](mailto:support@example.com).
+
+```
