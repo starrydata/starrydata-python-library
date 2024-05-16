@@ -1,4 +1,3 @@
-```markdown
 # Starrydata
 
 Starrydata is a library that allows users to easily download and utilize datasets related to inorganic materials. This library enables efficient data retrieval for research and projects.
