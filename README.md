@@ -32,6 +32,8 @@ df = pd.read_csv(dataset.all_curves)
 print(df)
 ```
 
+More details is [1_how_to_use.ipynb](example_notebooks/1_how_to_use.ipynb)
+
 ## Documentation
 
 For more detailed documentation and usage examples, please refer to the [official documentation](https://pypi.org/project/starrydata/).
