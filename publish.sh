@@ -29,13 +29,33 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 
 # Update version
-bumpversion $VERSION
+if ! bumpversion $VERSION; then
+    echo "Error: bumpversion failed."
+    exit 1
+fi
 
 # Clean up the build directory
-rm -rf dist
+if ! rm -rf dist; then
+    echo "Error: Failed to clean up the build directory."
+    exit 1
+fi
 
 # Build the package
-python -m build
+if ! python -m build; then
+    echo "Error: Build failed."
+    exit 1
+fi
 
 # Upload to the specified repository
-python -m twine upload --repository $REPOSITORY dist/* -u "__token__" -p $API_TOKEN
+if ! python -m twine upload --repository $REPOSITORY dist/* -u "__token__" -p $API_TOKEN; then
+    echo "Error: Failed to upload the package."
+    exit 1
+fi
+
+# Push changes to Git
+if ! git push origin main; then
+    echo "Error: Failed to push changes to Git."
+    exit 1
+fi
+
+echo "All steps completed successfully."
