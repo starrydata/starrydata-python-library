@@ -21,6 +21,7 @@ class Dataset:
         self.api_url = api_url
         self.date = date
         self.zip_data = self._download_zip()
+        self._print_dataset_timestamp()
 
     def _fetch_article(self) -> dict:
         logging.info("Fetching dataset information.")
@@ -93,7 +94,6 @@ class Dataset:
         logging.info(f"Download complete. ZIP file '{file_name}' loaded into memory.")
         return buffer
 
-
     def _extract_file_from_zip(self, filename: str) -> io.BytesIO:
         with zipfile.ZipFile(self.zip_data, 'r') as zip_ref:
             with zip_ref.open(filename) as file:
@@ -142,3 +142,11 @@ class Dataset:
         filename = "db_snapshot.txt"
         file_data = self._extract_file_from_zip(filename)
         return file_data.getvalue().decode('utf-8')
+
+    def _print_dataset_timestamp(self):
+        """
+        Print the dataset timestamp after downloading the dataset.
+        """
+        timestamp = self.dataset_timestamp
+        print(f"Dataset timestamp: {timestamp}")
+
