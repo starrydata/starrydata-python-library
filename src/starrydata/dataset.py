@@ -90,7 +90,7 @@ class Dataset:
                 return io.BytesIO(file.read())
 
     @property
-    def all_samples(self) -> io.BytesIO:
+    def samples_csv(self) -> io.BytesIO:
         """
         Extract and load the 'all_samples.csv' file from the downloaded ZIP file into a pandas DataFrame.
 
@@ -101,7 +101,7 @@ class Dataset:
         return file_data
 
     @property
-    def all_papers(self) -> io.BytesIO:
+    def papers_json(self) -> io.BytesIO:
         """
         Extract and load the 'all_papers.json' file from the downloaded ZIP file into a pandas DataFrame.
 
@@ -112,7 +112,7 @@ class Dataset:
         return file_data
 
     @property
-    def all_curves(self) -> io.BytesIO:
+    def curves_csv(self) -> io.BytesIO:
         """
         Extract and load the 'all_curves.csv' file from the downloaded ZIP file into a pandas DataFrame.
 
@@ -123,7 +123,7 @@ class Dataset:
         return file_data
 
     @property
-    def database_snapshot(self) -> str:
+    def dataset_timestamp(self) -> str:
         """
         Extract and return the contents of the 'db_snapshot.txt' file from the downloaded ZIP file as a string.
 
