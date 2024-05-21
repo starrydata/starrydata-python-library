@@ -27,7 +27,7 @@ class Dataset:
         if self.date:
             search_for = f"{self.date.replace('-', '')}_starrydata2"
             search_url = f"{self.api_url}/articles/search"
-            headers = {"Content-Type": "application/json"}
+            headers = {"Content-Type": "application/json", "User-Agent": "Starrydata"}
             search_body = {"project_id": self.project_id, "search_for": search_for}
             response = requests.post(search_url, headers=headers, data=json.dumps(search_body))
 
