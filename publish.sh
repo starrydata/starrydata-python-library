@@ -22,6 +22,12 @@ else
     API_TOKEN=$PROD_PYPI_API_TOKEN
 fi
 
+# Check if Git working directory is clean
+if [ -n "$(git status --porcelain)" ]; then
+    echo "Error: Git working directory is not clean. Please commit or stash your changes."
+    exit 1
+fi
+
 # Update version
 bumpversion $VERSION
 
