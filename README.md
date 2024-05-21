@@ -38,7 +38,7 @@ df_samples = pd.read_csv(sd_dataset.samples_csv)
 df_papers = pd.read_json(sd_dataset.papers_json)
 ```
 
-More details is [1_how_to_use.ipynb](https://github.com/starrydata/starrydata-python-library/blob/main/example_notebooks/1_how_to_use.ipynb)
+More details is [1_how_to_use.ipynb on Google Colab](https://colab.research.google.com/github/starrydata/starrydata-python-library/blob/master/example_notebooks/1_how_to_use.ipynb)
 
 ## Documentation
 
