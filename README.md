@@ -19,17 +19,23 @@ Below is an example of how to use Starrydata.
 To download a specific dataset, use the `Dataset` class. Here is an example of how to download and load a dataset into a pandas DataFrame:
 
 ```python
-from starrydata import Dataset
-import pandas as pd
+import starrydata as sd  # Import the Starrydata library
+import pandas as pd  # Import the pandas library
 
-# Initialize the Dataset object with a specific date
-dataset = Dataset(date="20240515")
+# Load the dataset for the specified date
+sd_dataset = sd.load_dataset(date="20240521")
 
-# Load the dataset into a pandas DataFrame
-df = pd.read_csv(dataset.all_curves)
+# Print the dataset timestamp to confirm the download date
+print(sd_dataset.dataset_timestamp)
 
-# Display the DataFrame
-print(df)
+# Read the 'all_curves.csv' file from the dataset and convert it to a pandas DataFrame
+df_curves = pd.read_csv(sd_dataset.curves_csv)
+
+# Read the 'all_samples.csv' file from the dataset and convert it to a pandas DataFrame
+df_samples = pd.read_csv(sd_dataset.samples_csv)
+
+# Read the 'all_papers.json' file from the dataset and convert it to a pandas DataFrame
+df_papers = pd.read_json(sd_dataset.papers_json)
 ```
 
 More details is [1_how_to_use.ipynb](example_notebooks/1_how_to_use.ipynb)
