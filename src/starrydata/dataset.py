@@ -30,22 +30,32 @@ class Dataset:
             headers = {"Content-Type": "application/json"}
             search_body = {"project_id": self.project_id, "search_for": search_for}
             response = requests.post(search_url, headers=headers, data=json.dumps(search_body))
-            articles = response.json()
-            if not articles:
-                logging.error(
-                    f"No datasets found for the specified date: {self.date}. "
-                    "Please check the valid dates at https://figshare.com/projects/Starrydata_datasets/155129"
-                )
+
+            if response.status_code == 200:
+                articles = response.json()
+                if not articles:
+                    logging.error(
+                        f"No datasets found for the specified date: {self.date}. "
+                        "Please check the valid dates at https://figshare.com/projects/Starrydata_datasets/155129"
+                    )
+                    return None
+                logging.info(f"Found dataset for date {self.date}: {articles[0]['title']}")
+                return articles[0]
+            else:
+                logging.error(f"Failed to fetch articles. Status code: {response.status_code}, Response: {response.text}")
                 return None
-            logging.info(f"Found dataset for date {self.date}: {articles[0]['title']}")
-            return articles[0]
 
         logging.info("No specific date provided. Fetching the latest dataset.")
-        articles = requests.get(f"{self.api_url}/projects/{self.project_id}/articles").json()
-        latest_article = max(articles, key=lambda x: x['published_date'])
-        logging.info(f"Found latest dataset: {latest_article['title']}")
-        return latest_article
+        response = requests.get(f"{self.api_url}/projects/{self.project_id}/articles")
 
+        if response.status_code == 200:
+            articles = response.json()
+            latest_article = max(articles, key=lambda x: x['published_date'])
+            logging.info(f"Found latest dataset: {latest_article['title']}")
+            return latest_article
+        else:
+            logging.error(f"Failed to fetch articles. Status code: {response.status_code}, Response: {response.text}")
+            return None
 
     def _download_zip(self) -> io.BytesIO:
         logging.info("Starting the download of the ZIP file.")
