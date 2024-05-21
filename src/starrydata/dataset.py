@@ -141,7 +141,7 @@ class Dataset:
         """
         filename = "db_snapshot.txt"
         file_data = self._extract_file_from_zip(filename)
-        return file_data.getvalue().decode('utf-8')
+        return file_data.getvalue().decode('utf-8').strip()
 
     def _print_dataset_timestamp(self):
         """
