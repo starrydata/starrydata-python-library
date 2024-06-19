@@ -9,19 +9,41 @@ from tqdm import tqdm
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class Dataset:
-    def __init__(self, project_id: int = 155129, api_url: str = "https://api.figshare.com/v2", date: str = None):
+    def __init__(self, project_id: int = 155129, api_url: str = "https://api.figshare.com/v2", date: str = None, zip_path: str = None):
         """
-        Initialize the Dataset object and download the dataset ZIP file.
+        Initialize the Dataset object and download the dataset ZIP file if local_zip_path is not provided.
 
         :param project_id: The ID of the Figshare project containing the datasets.
         :param api_url: The base URL of the Figshare API.
         :param date: The date of the dataset to load in 'YYYY-MM-DD' format. If None, the latest dataset is loaded.
+        :param zip_path: Path to the local ZIP file. If provided, the ZIP file will be loaded from this path.
         """
         self.project_id = project_id
         self.api_url = api_url
         self.date = date
-        self.zip_data = self._download_zip()
+        self.local_zip_path = zip_path
+
+        if zip_path:
+            self.zip_data = self._load_local_zip(zip_path)
+        else:
+            self.zip_data = self._download_zip()
+
         self._print_dataset_timestamp()
+
+    def _load_local_zip(self, path: str) -> io.BytesIO:
+        """
+        Load the ZIP file from a local path.
+
+        :param path: Path to the local ZIP file.
+        :return: A BytesIO object containing the ZIP file data.
+        """
+        logging.info(f"Loading ZIP file from local path: {path}")
+        buffer = io.BytesIO()
+        with open(path, 'rb') as f:
+            buffer.write(f.read())
+        buffer.seek(0)  # Reset buffer position to the beginning
+        logging.info("Local ZIP file loaded into memory.")
+        return buffer
 
     def _fetch_article(self) -> dict:
         logging.info("Fetching dataset information.")
@@ -149,4 +171,3 @@ class Dataset:
         """
         timestamp = self.dataset_timestamp
         print(f"Dataset timestamp: {timestamp}")
-
