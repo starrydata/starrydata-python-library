@@ -8,18 +8,17 @@ from tqdm import tqdm
 # Set up basic configuration for logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+
 class Dataset:
-    def __init__(self, project_id: int = 155129, api_url: str = "https://api.figshare.com/v2", date: str = None, zip_path: str = None):
+    def __init__(self, date: str = None, zip_path: str = None):
         """
         Initialize the Dataset object and download the dataset ZIP file if local_zip_path is not provided.
 
-        :param project_id: The ID of the Figshare project containing the datasets.
-        :param api_url: The base URL of the Figshare API.
         :param date: The date of the dataset to load in 'YYYY-MM-DD' format. If None, the latest dataset is loaded.
         :param zip_path: Path to the local ZIP file. If provided, the ZIP file will be loaded from this path.
         """
-        self.project_id = project_id
-        self.api_url = api_url
+        self.project_id = 155129
+        self.api_url = "https://api.figshare.com/v2"
         self.date = date
         self.local_zip_path = zip_path
 
@@ -65,7 +64,8 @@ class Dataset:
                 logging.info(f"Found dataset for date {self.date}: {articles[0]['title']}")
                 return articles[0]
             else:
-                logging.error(f"Failed to fetch articles. Status code: {response.status_code}, Response: {response.text}")
+                logging.error(
+                    f"Failed to fetch articles. Status code: {response.status_code}, Response: {response.text}")
                 return None
 
         logging.info("No specific date provided. Fetching the latest dataset.")
