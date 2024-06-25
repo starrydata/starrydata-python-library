@@ -14,7 +14,7 @@ pip install starrydata
 
 Below is an example of how to use Starrydata.
 
-### Downloading a Dataset
+### Download and load the Starrydata dataset
 
 To download a specific dataset, use the `Dataset` class. Here is an example of how to download and load a dataset into a pandas DataFrame:
 
@@ -34,11 +34,21 @@ df_curves = pd.read_csv(sd_dataset.curves_csv)
 # Read the 'all_samples.csv' file from the dataset and convert it to a pandas DataFrame
 df_samples = pd.read_csv(sd_dataset.samples_csv)
 
-# Read the 'all_papers.json' file from the dataset and convert it to a pandas DataFrame
-df_papers = pd.read_json(sd_dataset.papers_json)
+# Read the 'all_papers.csv' file from the dataset and convert it to a pandas DataFrame
+df_papers = pd.read_json(sd_dataset.papers_csv)
 ```
 
-More details is [1_how_to_use.ipynb on Google Colab](https://colab.research.google.com/github/starrydata/starrydata-python-library/blob/master/example_notebooks/1_how_to_use.ipynb)
+### load the Starrydata dataset zip file directly
+
+```python
+import starrydata as sd
+import pandas as pd
+
+sd_dataset = sd.load_dataset(zip_path="<your_local_file_path>")
+df_curve = pd.read_csv(sd_dataset.curves_csv)
+df_sample = pd.read_csv(sd_dataset.samples_csv)
+df_paper = pd.read_csv(sd_dataset.papers_csv)
+```
 
 ## Documentation
 

@@ -124,11 +124,11 @@ class Dataset:
     @property
     def samples_csv(self) -> io.BytesIO:
         """
-        Extract and load the 'all_samples.csv' file from the downloaded ZIP file into a pandas DataFrame.
+        Extract and load the 'starrydata_samples.csv' file from the downloaded ZIP file into a pandas DataFrame.
 
-        :return: A pandas DataFrame containing the data from 'all_samples.csv'.
+        :return: A pandas DataFrame containing the data from 'starrydata_samples.csv'.
         """
-        filename = "all_samples.csv"
+        filename = "starrydata_samples.csv"
         file_data = self._extract_file_from_zip(filename)
         return file_data
 
@@ -140,17 +140,35 @@ class Dataset:
         :return: A pandas DataFrame containing the data from 'all_papers.json'.
         """
         filename = "all_papers.json"
+        try:
+            file_data = self._extract_file_from_zip(filename)
+        except KeyError:
+            raise FileNotFoundError(
+                "The 'all_papers.json' file was not found. Please note that the dataset format changed on 2024/06/26 "
+                "from JSON to CSV. Use the 'papers_csv' property to access the 'starrydata_papers.csv' file instead."
+                "https://github.com/starrydata/starrydata_datasets/blob/master/README.md#20240626"
+            )
+        return file_data
+
+    @property
+    def papers_csv(self) -> io.BytesIO:
+        """
+        Extract and load the 'starrydata_papers.csv' file from the downloaded ZIP file into a pandas DataFrame.
+
+        :return: A pandas DataFrame containing the data from 'starrydata_papers.csv'.
+        """
+        filename = "starrydata_papers.csv"
         file_data = self._extract_file_from_zip(filename)
         return file_data
 
     @property
     def curves_csv(self) -> io.BytesIO:
         """
-        Extract and load the 'all_curves.csv' file from the downloaded ZIP file into a pandas DataFrame.
+        Extract and load the 'starrydata_curves.csv' file from the downloaded ZIP file into a pandas DataFrame.
 
-        :return: A pandas DataFrame containing the data from 'all_curves.csv'.
+        :return: A pandas DataFrame containing the data from 'starrydata_curves.csv'.
         """
-        filename = "all_curves.csv"
+        filename = "starrydata_curves.csv"
         file_data = self._extract_file_from_zip(filename)
         return file_data
 
