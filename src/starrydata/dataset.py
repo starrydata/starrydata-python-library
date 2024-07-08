@@ -129,7 +129,7 @@ class Dataset:
 
         :return: A pandas DataFrame containing the data from 'samples_csv' file.
         """
-        return self._extract_file_from_zip('samples_csv')
+        return self._extract_file_from_zip('samples.csv')
 
     @property
     def papers_json(self) -> io.BytesIO:
@@ -138,7 +138,7 @@ class Dataset:
 
         :return: A pandas DataFrame containing the data from 'papers_json' file.
         """
-        return self._extract_file_from_zip('papers_json')
+        return self._extract_file_from_zip('papers.json')
 
     @property
     def papers_csv(self) -> io.BytesIO:
@@ -147,7 +147,7 @@ class Dataset:
 
         :return: A pandas DataFrame containing the data from 'papers_csv' file.
         """
-        return self._extract_file_from_zip('papers_csv')
+        return self._extract_file_from_zip('papers.csv')
 
     @property
     def curves_csv(self) -> io.BytesIO:
@@ -156,7 +156,7 @@ class Dataset:
 
         :return: A pandas DataFrame containing the data from 'curves_csv' file.
         """
-        return self._extract_file_from_zip('curves_csv')
+        return self._extract_file_from_zip('curves.csv')
 
 
     @property
