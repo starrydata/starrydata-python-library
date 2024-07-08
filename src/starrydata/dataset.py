@@ -116,61 +116,48 @@ class Dataset:
         logging.info(f"Download complete. ZIP file '{file_name}' loaded into memory.")
         return buffer
 
-    def _extract_file_from_zip(self, filename: str) -> io.BytesIO:
+    def _extract_file_from_zip(self, keyword: str) -> io.BytesIO:
         with zipfile.ZipFile(self.zip_data, 'r') as zip_ref:
+            filename = [f for f in zip_ref.namelist() if keyword in f][0]
             with zip_ref.open(filename) as file:
                 return io.BytesIO(file.read())
 
     @property
     def samples_csv(self) -> io.BytesIO:
         """
-        Extract and load the 'starrydata_samples.csv' file from the downloaded ZIP file into a pandas DataFrame.
+        Extract and load the 'samples_csv' file from the downloaded ZIP file into a pandas DataFrame.
 
-        :return: A pandas DataFrame containing the data from 'starrydata_samples.csv'.
+        :return: A pandas DataFrame containing the data from 'samples_csv' file.
         """
-        filename = "starrydata_samples.csv"
-        file_data = self._extract_file_from_zip(filename)
-        return file_data
+        return self._extract_file_from_zip('samples_csv')
 
     @property
     def papers_json(self) -> io.BytesIO:
         """
-        Extract and load the 'all_papers.json' file from the downloaded ZIP file into a pandas DataFrame.
+        Extract and load the 'papers_json' file from the downloaded ZIP file into a pandas DataFrame.
 
-        :return: A pandas DataFrame containing the data from 'all_papers.json'.
+        :return: A pandas DataFrame containing the data from 'papers_json' file.
         """
-        filename = "all_papers.json"
-        try:
-            file_data = self._extract_file_from_zip(filename)
-        except KeyError:
-            raise FileNotFoundError(
-                "The 'all_papers.json' file was not found. Please note that the dataset format changed on 2024/06/26 "
-                "from JSON to CSV. Use the 'papers_csv' property to access the 'starrydata_papers.csv' file instead."
-                "https://github.com/starrydata/starrydata_datasets/blob/master/README.md#20240626"
-            )
-        return file_data
+        return self._extract_file_from_zip('papers_json')
 
     @property
     def papers_csv(self) -> io.BytesIO:
         """
-        Extract and load the 'starrydata_papers.csv' file from the downloaded ZIP file into a pandas DataFrame.
+        Extract and load the 'papers_csv' file from the downloaded ZIP file into a pandas DataFrame.
 
-        :return: A pandas DataFrame containing the data from 'starrydata_papers.csv'.
+        :return: A pandas DataFrame containing the data from 'papers_csv' file.
         """
-        filename = "starrydata_papers.csv"
-        file_data = self._extract_file_from_zip(filename)
-        return file_data
+        return self._extract_file_from_zip('papers_csv')
 
     @property
     def curves_csv(self) -> io.BytesIO:
         """
-        Extract and load the 'starrydata_curves.csv' file from the downloaded ZIP file into a pandas DataFrame.
+        Extract and load the 'curves_csv' file from the downloaded ZIP file into a pandas DataFrame.
 
-        :return: A pandas DataFrame containing the data from 'starrydata_curves.csv'.
+        :return: A pandas DataFrame containing the data from 'curves_csv' file.
         """
-        filename = "starrydata_curves.csv"
-        file_data = self._extract_file_from_zip(filename)
-        return file_data
+        return self._extract_file_from_zip('curves_csv')
+
 
     @property
     def dataset_timestamp(self) -> str:
